@@ -7,6 +7,7 @@ import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.views.ViewBundle;
+import me.desair.dropwizard.cli.UploadCommand;
 import me.desair.dropwizard.resources.IndexResource;
 import me.desair.dropwizard.resources.TusUploadResource;
 import me.desair.tus.server.TusFileUploadService;
@@ -28,6 +29,7 @@ public class TusFileUploadApplication extends Application<TusFileUploadConfigura
     public void initialize(final Bootstrap<TusFileUploadConfiguration> bootstrap) {
         bootstrap.addBundle(new ViewBundle<TusFileUploadConfiguration>());
         bootstrap.addBundle(new AssetsBundle("/assets/js", "/js", null, "js"));
+        bootstrap.addCommand(new UploadCommand());
     }
 
     @Override

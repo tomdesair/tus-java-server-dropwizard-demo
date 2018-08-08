@@ -48,10 +48,19 @@
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-assets</artifactId>
         </dependency>
+
+        <!-- Required by upload endpoint -->
         <dependency>
             <groupId>me.desair.tus</groupId>
             <artifactId>tus-java-server</artifactId>
             <version>1.0.0-1.1-SNAPSHOT</version>
+        </dependency>
+
+        <!-- Required by upload CLI command -->
+        <dependency>
+            <groupId>io.tus.java.client</groupId>
+            <artifactId>tus-java-client</artifactId>
+            <version>0.4.0</version>
         </dependency>
     </dependencies>
 

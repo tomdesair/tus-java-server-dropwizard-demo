@@ -4,6 +4,7 @@ import static me.desair.dropwizard.resources.TusUploadResource.UPLOAD_PATH;
 
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
+import io.dropwizard.forms.MultiPartBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.views.ViewBundle;
@@ -34,6 +35,7 @@ public class TusFileUploadApplication extends Application<TusFileUploadConfigura
     public void initialize(final Bootstrap<TusFileUploadConfiguration> bootstrap) {
         bootstrap.addBundle(new ViewBundle<TusFileUploadConfiguration>());
         bootstrap.addBundle(new AssetsBundle("/assets/js", "/js", null, "js"));
+        bootstrap.addBundle(new MultiPartBundle());
         bootstrap.addCommand(new UploadCommand());
         bootstrap.addCommand(new CleanUploadsCommand(this));
     }
@@ -43,11 +45,13 @@ public class TusFileUploadApplication extends Application<TusFileUploadConfigura
                     final Environment environment) {
 
         //Resource responsible for processing the tus file uploads
-        final TusUploadResource uploadResource = new TusUploadResource(getTusFileUploadService(configuration));
+        TusFileUploadService tusFileUploadService = getTusFileUploadService(configuration);
+
+        final TusUploadResource uploadResource = new TusUploadResource(tusFileUploadService);
         environment.jersey().register(uploadResource);
 
         //Resource responsible for displaying the home page with the Uppy file upload form
-        final IndexResource indexResource = new IndexResource();
+        final IndexResource indexResource = new IndexResource(tusFileUploadService);
         environment.jersey().register(indexResource);
     }
 

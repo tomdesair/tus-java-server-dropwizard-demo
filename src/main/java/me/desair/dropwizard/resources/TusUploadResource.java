@@ -16,6 +16,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.SecurityContext;
 
 import io.dropwizard.jersey.PATCH;
+import me.desair.dropwizard.api.UploadUtils;
 import me.desair.tus.server.TusFileUploadService;
 
 @Path(UPLOAD_PATH)
@@ -86,12 +87,8 @@ public class TusUploadResource {
     private void processRequest(HttpServletRequest request,
                                 HttpServletResponse response,
                                 SecurityContext securityContext) throws IOException {
-        String owner = null;
-        if (securityContext != null && securityContext.getUserPrincipal() != null) {
-            owner = securityContext.getUserPrincipal().getName();
-        }
 
-        tusFileUploadService.process(request, response, owner);
+        tusFileUploadService.process(request, response, UploadUtils.getOwnerKey(securityContext));
     }
 
 }

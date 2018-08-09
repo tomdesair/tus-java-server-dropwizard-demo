@@ -24,3 +24,9 @@ uppy.use(Uppy.Dashboard, {
 uppy.use(Uppy.Tus, {
     endpoint: 'http://localhost:8080/api/upload'
 });
+
+uppy.on('upload-success', function(file, upload) {
+    console.log("Upload " + file.name + " completed with URL " + upload.url);
+    document.getElementById('uploadUrls').value += upload.url + ";";
+    console.log("Added upload URL " + upload.url + " to submission form data so that it can be processed by the backend");
+});

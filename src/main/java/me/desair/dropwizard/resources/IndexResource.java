@@ -19,6 +19,7 @@ import me.desair.dropwizard.views.SubmissionCompletedView;
 import me.desair.tus.server.TusFileUploadService;
 import me.desair.tus.server.exception.TusException;
 import me.desair.tus.server.upload.UploadInfo;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
@@ -54,7 +55,13 @@ public class IndexResource {
 
                 //Inform user of files we received
                 UploadInfo uploadInfo = tusFileUploadService.getUploadInfo(url, ownerKey);
-                uploads.add(uploadInfo.getFileName() + " (" + uploadInfo.getFileMimeType() + ")");
+                if(uploadInfo != null) {
+                    uploads.add(
+                            uploadInfo.getFileName()
+                                    + " (" + uploadInfo.getFileMimeType() + "): "
+                                    + FileUtils.byteCountToDisplaySize(uploadInfo.getLength())
+                    );
+                }
 
                 //Since we're done with processing the upload, we can safely remove it now
                 tusFileUploadService.deleteUpload(url, ownerKey);

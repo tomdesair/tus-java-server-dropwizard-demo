@@ -4,15 +4,18 @@ import static me.desair.dropwizard.resources.TusUploadResource.UPLOAD_PATH;
 
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
+import io.dropwizard.client.HttpClientBuilder;
 import io.dropwizard.forms.MultiPartBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.views.ViewBundle;
 import me.desair.dropwizard.cli.CleanUploadsCommand;
 import me.desair.dropwizard.cli.UploadCommand;
+import me.desair.dropwizard.health.TusEndpointHealthCheck;
 import me.desair.dropwizard.resources.IndexResource;
 import me.desair.dropwizard.resources.TusUploadResource;
 import me.desair.tus.server.TusFileUploadService;
+import org.apache.http.client.HttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,15 +47,22 @@ public class TusFileUploadApplication extends Application<TusFileUploadConfigura
     public void run(final TusFileUploadConfiguration configuration,
                     final Environment environment) {
 
-        //Resource responsible for processing the tus file uploads
+        //Configure the TusFileUploadService
         TusFileUploadService tusFileUploadService = getTusFileUploadService(configuration);
 
+        //Resource responsible for processing the tus file uploads
         final TusUploadResource uploadResource = new TusUploadResource(tusFileUploadService);
         environment.jersey().register(uploadResource);
 
         //Resource responsible for displaying the home page with the Uppy file upload form
         final IndexResource indexResource = new IndexResource(tusFileUploadService);
         environment.jersey().register(indexResource);
+
+        //Configure a Dropwizard health check on the tus upload end point
+        final HttpClient httpClient = new HttpClientBuilder(environment).using(configuration.getHttpClientConfiguration())
+                .build("tusEndpointHealthCheckClient");
+        environment.healthChecks().register("tus-upload-endpoint",
+                new TusEndpointHealthCheck("http://localhost:8080/api/upload", httpClient));
     }
 
     public TusFileUploadService getTusFileUploadService(TusFileUploadConfiguration configuration) {

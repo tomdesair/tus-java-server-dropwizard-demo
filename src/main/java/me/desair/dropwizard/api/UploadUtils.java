@@ -8,6 +8,11 @@ public class UploadUtils {
 
     }
 
+    /**
+     * Build a unique owner key for the current authenticated user.
+     * @param securityContext The security context that provides information on the authenticated user.
+     * @return A unique key for this user
+     */
     public static String getOwnerKey(SecurityContext securityContext) {
         String owner = null;
         if (securityContext != null && securityContext.getUserPrincipal() != null) {

@@ -52,6 +52,10 @@
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-forms</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-client</artifactId>
+        </dependency>
 
         <!-- Required by upload endpoint -->
         <dependency>
